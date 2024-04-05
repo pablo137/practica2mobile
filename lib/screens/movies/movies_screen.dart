@@ -4,7 +4,14 @@ import 'package:practica2mobile/cubits/popular_movies_cubit.dart';
 import 'package:practica2mobile/screens/movies/custom_app_bar.dart';
 import 'package:practica2mobile/widgets/movie_card.dart'; // Importa tu Cubit de películas populares
 
-class PopularMoviesScreen extends StatelessWidget {
+class PopularMoviesScreen extends StatefulWidget {
+  @override
+  _PopularMoviesScreenState createState() => _PopularMoviesScreenState();
+}
+
+class _PopularMoviesScreenState extends State<PopularMoviesScreen> {
+  List<Map<String, dynamic>> selectedMovies = []; // Lista de películas seleccionadas
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -20,10 +27,7 @@ class PopularMoviesScreen extends StatelessWidget {
                 final movie = state.movies[index];
                 return MovieCard(
                   movie: movie,
-                  // onAddToCart: () {
-                  //   // Aquí puedes manejar la lógica para añadir la película al carrito
-                  //   print('Añadir "${movie['title']}" al carrito');
-                  // },
+                  selectedMovies: selectedMovies, // Pasar la lista de películas seleccionadas
                 );
               },
             );
