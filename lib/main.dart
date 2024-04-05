@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:practica2mobile/cubit/popular_movies_cubit.dart';
-import 'package:practica2mobile/screens/movies_screen.dart'; // Importa tu pantalla de películas populares
+import 'package:practica2mobile/cubits/popular_movies_cubit.dart';
+import 'package:practica2mobile/screens/movies/movies_screen.dart'; // Importa tu pantalla de películas populares
 
 void main() {
   runApp(MyApp());

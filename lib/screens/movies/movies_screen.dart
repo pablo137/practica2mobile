@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:practica2mobile/cubit/popular_movies_cubit.dart'; // Importa tu Cubit de películas populares
+import 'package:practica2mobile/cubits/popular_movies_cubit.dart';
+import 'package:practica2mobile/screens/movies/custom_app_bar.dart';
+import 'package:practica2mobile/widgets/movie_card.dart'; // Importa tu Cubit de películas populares
 
 class PopularMoviesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text('Películas Populares'),
-      ),
+      appBar: CustomAppBar(),
       body: BlocBuilder<PopularMoviesCubit, PopularMoviesState>(
         builder: (context, state) {
           if (state is PopularMoviesLoading) {
@@ -18,16 +18,12 @@ class PopularMoviesScreen extends StatelessWidget {
               itemCount: state.movies.length,
               itemBuilder: (context, index) {
                 final movie = state.movies[index];
-                return ListTile(
-                  leading: Image.network(
-                    'https://image.tmdb.org/t/p/w200${movie['poster_path']}',
-                    width: 100,
-                    height: 150,
-                    fit: BoxFit.cover,
-                  ),
-                  title: Text(movie['title']),
-                  subtitle: Text(movie['overview']),
-                  // Puedes agregar más información del movie si lo deseas
+                return MovieCard(
+                  movie: movie,
+                  // onAddToCart: () {
+                  //   // Aquí puedes manejar la lógica para añadir la película al carrito
+                  //   print('Añadir "${movie['title']}" al carrito');
+                  // },
                 );
               },
             );
