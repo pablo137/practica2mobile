@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:practica2mobile/screens/success/success_screen.dart';
 
 class SelectedMoviesScreen extends StatelessWidget {
   final List<Map<String, dynamic>> selectedMovies;
@@ -19,17 +20,20 @@ class SelectedMoviesScreen extends StatelessWidget {
               itemBuilder: (context, index) {
                 final movie = selectedMovies[index];
                 return CustomMovieTile(
-                    movie:
-                        movie); // Usar un ListTile personalizado para mostrar la película
+                  movie: movie,
+                ); // Usar un ListTile personalizado para mostrar la película
               },
             ),
           ),
           ElevatedButton(
             onPressed: () {
-              // Lógica para realizar la compra
-              print('Compra realizada');
+              // Navegar a la pantalla "Success" al hacer clic en el botón "Comprar"
+              Navigator.push(
+                context,
+                MaterialPageRoute(builder: (context) => SuccessScreen()),
+              );
             },
-                        style: ElevatedButton.styleFrom(
+            style: ElevatedButton.styleFrom(
               // Establecer el estilo del botón
               backgroundColor: Colors.green, // Cambiar el color de fondo del botón a verde
             ),
@@ -40,7 +44,6 @@ class SelectedMoviesScreen extends StatelessWidget {
     );
   }
 }
-
 
 class CustomMovieTile extends StatefulWidget {
   final Map<String, dynamic> movie;
