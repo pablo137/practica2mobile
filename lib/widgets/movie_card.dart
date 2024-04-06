@@ -3,10 +3,12 @@ import 'package:flutter/material.dart';
 class MovieCard extends StatefulWidget {
   final Map<String, dynamic> movie;
   final double moviePrice = 20.0;
+  final List<Map<String, dynamic>> selectedMovies; // Lista para almacenar películas seleccionadas
 
   const MovieCard({
     Key? key,
     required this.movie,
+    required this.selectedMovies, // Recibe la lista de películas seleccionadas
   }) : super(key: key);
 
   @override
@@ -14,14 +16,18 @@ class MovieCard extends StatefulWidget {
 }
 
 class _MovieCardState extends State<MovieCard> {
-  bool _isSelected = false;
-
   @override
   Widget build(BuildContext context) {
+    bool _isSelected = widget.selectedMovies.contains(widget.movie); // Verifica si esta película está en la lista de seleccionadas
+
     return GestureDetector(
       onTap: () {
         setState(() {
-          _isSelected = !_isSelected;
+          if (_isSelected) {
+            widget.selectedMovies.remove(widget.movie); // Si ya está seleccionada, remuévela de la lista
+          } else {
+            widget.selectedMovies.add(widget.movie); // Si no está seleccionada, agrégala a la lista
+          }
         });
       },
       child: Card(
