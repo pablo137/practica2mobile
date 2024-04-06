@@ -1,10 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:practica2mobile/screens/success/success_screen.dart';
+import 'package:practica2mobile/widgets/movie_card.dart';
 
-class SelectedMoviesScreen extends StatelessWidget {
+class SelectedMoviesScreen extends StatefulWidget {
   final List<Map<String, dynamic>> selectedMovies;
 
   SelectedMoviesScreen({required this.selectedMovies});
+
+  @override
+  _SelectedMoviesScreenState createState() => _SelectedMoviesScreenState();
+}
+
+class _SelectedMoviesScreenState extends State<SelectedMoviesScreen> {
+  double totalCost = 0.0;
+
+  @override
+  void initState() {
+    super.initState();
+    // Calcular el costo total inicial
+    updateTotalCost();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -14,17 +29,24 @@ class SelectedMoviesScreen extends StatelessWidget {
       ),
       body: Column(
         children: [
+          SizedBox(height: 20),
+          Text(
+            'Costo Total de todas las películas: \$${totalCost.toStringAsFixed(2)}',
+            style: TextStyle(fontSize: 20),
+          ),
           Expanded(
             child: ListView.builder(
-              itemCount: selectedMovies.length,
+              itemCount: widget.selectedMovies.length,
               itemBuilder: (context, index) {
-                final movie = selectedMovies[index];
-                return CustomMovieTile(
+                final movie = widget.selectedMovies[index];
+                return MovieCard(
                   movie: movie,
-                ); // Usar un ListTile personalizado para mostrar la película
+                  selectedMovies: widget.selectedMovies,
+                );
               },
             ),
           ),
+          SizedBox(height: 20),
           ElevatedButton(
             onPressed: () {
               // Navegar a la pantalla "Success" al hacer clic en el botón "Comprar"
@@ -43,72 +65,22 @@ class SelectedMoviesScreen extends StatelessWidget {
       ),
     );
   }
-}
 
-class CustomMovieTile extends StatefulWidget {
-  final Map<String, dynamic> movie;
+  // Método para actualizar el costo total
+  void updateTotalCost() {
+    double cost = 0.0;
+    List<String> selectedMovieTitles = [];
 
-  const CustomMovieTile({Key? key, required this.movie}) : super(key: key);
+    for (var movie in widget.selectedMovies) {
+      // Asegurarse de que solo se cuente una vez el costo de cada película
+      if (!selectedMovieTitles.contains(movie['title'])) {
+        cost += 20.0; // Precio fijo de cada película (suponiendo $20)
+        selectedMovieTitles.add(movie['title']);
+      }
+    }
 
-  @override
-  _CustomMovieTileState createState() => _CustomMovieTileState();
-}
-
-class _CustomMovieTileState extends State<CustomMovieTile> {
-  int _quantity = 0;
-  final double _moviePrice = 20.0; // Precio de la película
-
-  @override
-  Widget build(BuildContext context) {
-    double totalPrice = _quantity * _moviePrice; // Calcular el precio total
-
-    return ListTile(
-      leading: SizedBox(
-        width: 100, // Aumentar el ancho de la imagen
-        height: 150, // Ajustar la altura de la imagen
-        child: Image.network(
-          'https://image.tmdb.org/t/p/w200${widget.movie['poster_path']}',
-          fit: BoxFit.cover,
-        ),
-      ),
-      title: Text(widget.movie['title']),
-      subtitle: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Text(widget.movie['overview'] ?? ''),
-          SizedBox(height: 8),
-          Row(
-            children: [
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    if (_quantity > 0) {
-                      _quantity--; // Reducir la cantidad
-                    }
-                  });
-                },
-                icon: Icon(Icons.remove),
-              ),
-              Text('$_quantity'), // Mostrar la cantidad actual
-              IconButton(
-                onPressed: () {
-                  setState(() {
-                    _quantity++; // Aumentar la cantidad
-                  });
-                },
-                icon: Icon(Icons.add),
-              ),
-              Text(
-                'Precio total: \$${totalPrice.toStringAsFixed(2)}', // Mostrar el precio total
-                style: TextStyle(
-                  fontWeight: FontWeight.bold,
-                  color: Colors.blue,
-                ),
-              ),
-            ],
-          ),
-        ],
-      ),
-    );
+    setState(() {
+      totalCost = cost;
+    });
   }
 }

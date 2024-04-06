@@ -3,12 +3,12 @@ import 'package:flutter/material.dart';
 class MovieCard extends StatefulWidget {
   final Map<String, dynamic> movie;
   final double moviePrice = 20.0;
-  final List<Map<String, dynamic>> selectedMovies; // Lista para almacenar películas seleccionadas
+  final List<Map<String, dynamic>> selectedMovies;
 
   const MovieCard({
     Key? key,
     required this.movie,
-    required this.selectedMovies, // Recibe la lista de películas seleccionadas
+    required this.selectedMovies,
   }) : super(key: key);
 
   @override
@@ -16,81 +16,103 @@ class MovieCard extends StatefulWidget {
 }
 
 class _MovieCardState extends State<MovieCard> {
+  bool _isSelected = false;
+
+  @override
+  void initState() {
+    super.initState();
+    _isSelected = widget.selectedMovies.contains(widget.movie);
+  }
+
   @override
   Widget build(BuildContext context) {
-    bool _isSelected = widget.selectedMovies.contains(widget.movie); // Verifica si esta película está en la lista de seleccionadas
-
     return GestureDetector(
       onTap: () {
         setState(() {
           if (_isSelected) {
-            widget.selectedMovies.remove(widget.movie); // Si ya está seleccionada, remuévela de la lista
+            widget.selectedMovies.remove(widget.movie);
           } else {
-            widget.selectedMovies.add(widget.movie); // Si no está seleccionada, agrégala a la lista
+            widget.selectedMovies.add(widget.movie);
           }
+          _isSelected = !_isSelected; // Toggle the selection
         });
       },
       child: Card(
-        child: Stack(
+        elevation: 4,
+        margin: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
+        shape: RoundedRectangleBorder(
+          borderRadius: BorderRadius.circular(15),
+        ),
+        child: Row(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  color: _isSelected ? Colors.black54 : null,
-                  child: Text(
-                    widget.movie['title'],
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      color: _isSelected ? Colors.white : null,
-                    ),
-                  ),
-                ),
-                SizedBox(height: 8),
-                Opacity(
-                  opacity: _isSelected ? 0.5 : 1.0,
-                  child: Image.network(
-                    'https://image.tmdb.org/t/p/w200${widget.movie['poster_path']}',
-                    width: double.infinity,
-                    height: 200,
-                    fit: BoxFit.cover,
-                  ),
-                ),
-              ],
+            ClipRRect(
+              borderRadius: BorderRadius.circular(15),
+              child: Image.network(
+                'https://image.tmdb.org/t/p/w200${widget.movie['poster_path']}',
+                width: 120,
+                height: 180,
+                fit: BoxFit.cover,
+              ),
             ),
-            if (_isSelected)
-              Positioned(
-                top: 110,
-                left: 130,
-                child: Transform.rotate(
-                  angle: 0, // 45 degrees in radians
-                  child: Container(
-                    color: Colors.red,
-                    padding: EdgeInsets.symmetric(vertical: 8, horizontal: 16),
-                    child: Text(
-                      'Seleccionado',
+            Expanded(
+              child: Padding(
+                padding: const EdgeInsets.all(12.0),
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      widget.movie['title'],
                       style: TextStyle(
+                        fontSize: 18,
                         fontWeight: FontWeight.bold,
-                        fontSize: 16,
-                        color: Colors.white,
                       ),
                     ),
-                  ),
+                    SizedBox(height: 8),
+                    Text(
+                      widget.movie['overview'],
+                      maxLines: 3,
+                      overflow: TextOverflow.ellipsis,
+                      style: TextStyle(fontSize: 14),
+                    ),
+                    SizedBox(height: 8),
+                    if (_isSelected)
+                      Container(
+                        padding: EdgeInsets.symmetric(vertical: 6, horizontal: 12),
+                        decoration: BoxDecoration(
+                          color: Colors.red,
+                          borderRadius: BorderRadius.circular(15),
+                        ),
+                        child: Text(
+                          'Eliminar',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontWeight: FontWeight.bold,
+                          ),
+                        ),
+                      ),
+                  ],
                 ),
               ),
-            Positioned(
-              bottom: 8,
-              right: 8,
-              child: Container(
-                padding: EdgeInsets.all(8),
-                color: _isSelected ? Colors.black54 : null,
-                child: Text(
-                  '\$${widget.moviePrice.toStringAsFixed(2)}',
-                  style: TextStyle(
-                    fontWeight: FontWeight.bold,
-                    color: _isSelected ? Colors.white : null,
+            ),
+            Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: Column(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text(
+                    '\$${widget.moviePrice.toStringAsFixed(2)}',
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                    ),
                   ),
-                ),
+                  SizedBox(height: 10),
+                  Icon(
+                    _isSelected ? Icons.check_circle : Icons.add_circle_outline,
+                    color: _isSelected ? Colors.green : Colors.grey,
+                    size: 30,
+                  ),
+                ],
               ),
             ),
           ],
