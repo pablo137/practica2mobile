@@ -15,7 +15,7 @@ class _PopularMoviesScreenState extends State<PopularMoviesScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: CustomAppBar(),
+      appBar: CustomAppBar(selectedMovies: selectedMovies),
       body: BlocBuilder<PopularMoviesCubit, PopularMoviesState>(
         builder: (context, state) {
           if (state is PopularMoviesLoading) {
@@ -41,3 +41,4 @@ class _PopularMoviesScreenState extends State<PopularMoviesScreen> {
     );
   }
 }
+

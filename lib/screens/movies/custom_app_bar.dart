@@ -1,14 +1,17 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:practica2mobile/cubits/popular_movies_cubit.dart';
+import 'package:practica2mobile/screens/selected_movies/selected_movies_screen.dart';
 
 class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
+  final List<Map<String, dynamic>> selectedMovies; // Nueva propiedad para la lista de películas seleccionadas
+
+  CustomAppBar({required this.selectedMovies}); // Constructor actualizado para recibir la lista
+
   @override
   Widget build(BuildContext context) {
     return AppBar(
       title: Text('Películas Populares'),
       actions: [
-        CartIconButton(),
+        CartIconButton(selectedMovies: selectedMovies), // Pasar la lista de películas seleccionadas al CartIconButton
       ],
     );
   }
@@ -18,42 +21,28 @@ class CustomAppBar extends StatelessWidget implements PreferredSizeWidget {
 }
 
 class CartIconButton extends StatelessWidget {
+  final List<Map<String, dynamic>> selectedMovies; // Lista de películas seleccionadas
+
+  CartIconButton({required this.selectedMovies}); // Constructor para recibir la lista
+
   @override
   Widget build(BuildContext context) {
-    return BlocBuilder<PopularMoviesCubit, PopularMoviesState>(
-      builder: (context, state) {
-        // Calcula la cantidad total de películas en el carrito
-        int cartItemCount = 0;
-        // Aquí debes obtener la cantidad total de películas en el carrito del estado
-
-        return Stack(
-          children: [
-            IconButton(
-              icon: Icon(Icons.movie_filter_outlined),
-              onPressed: () {
-                // Aquí puedes manejar la acción al presionar el icono del carrito
-                print('Abrir carrito');
-              },
-            ),
-            if (cartItemCount > 0)
-              Positioned(
-                right: 6,
-                top: 6,
-                child: CircleAvatar(
-                  backgroundColor: Colors.red,
-                  radius: 10,
-                  child: Text(
-                    cartItemCount.toString(),
-                    style: TextStyle(
-                      color: Colors.white,
-                      fontSize: 12,
-                    ),
-                  ),
-                ),
+    return Stack(
+      children: [
+        IconButton(
+          icon: Icon(Icons.movie_filter_outlined),
+          onPressed: () {
+            // Navegar a la pantalla de películas seleccionadas
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => SelectedMoviesScreen(selectedMovies: selectedMovies),
               ),
-          ],
-        );
-      },
+            );
+          },
+        ),
+        // Resto del contenido
+      ],
     );
   }
 }
